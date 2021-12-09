@@ -1,0 +1,1139 @@
+[
+    {
+        "id": "49cd927658ee0416",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "28f5009f44845641",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "916aae87fd60c62c",
+        "type": "Generic BLE",
+        "localName": "Arduino Heartrate",
+        "address": "7f:f5:e0:e4:bb:c8",
+        "uuid": "7ff5e0e4bbc8",
+        "characteristics": [
+            {
+                "uuid": "2a05",
+                "name": "Service Changed",
+                "type": "org.bluetooth.characteristic.gatt.service_changed",
+                "notifiable": false,
+                "readable": false,
+                "writable": false,
+                "writeWithoutResponse": false
+            },
+            {
+                "uuid": "9b1f22f12dc64bb0b3c349399001b4d1",
+                "name": "<Unnamed>",
+                "type": "(Custom Type)",
+                "notifiable": false,
+                "readable": true,
+                "writable": true,
+                "writeWithoutResponse": false
+            },
+            {
+                "uuid": "b91006d878c744949ec4fdfe8dfb3cc7",
+                "name": "<Unnamed>",
+                "type": "(Custom Type)",
+                "notifiable": true,
+                "readable": true,
+                "writable": false,
+                "writeWithoutResponse": false
+            }
+        ]
+    },
+    {
+        "id": "8de41b8723e2556c",
+        "type": "Generic BLE",
+        "localName": "Arduino Dumbbell",
+        "address": "26:bb:2b:28:33:c6",
+        "uuid": "26bb2b2833c6",
+        "characteristics": []
+    },
+    {
+        "id": "31fe939f393cad01",
+        "type": "json",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 1270,
+        "y": 760,
+        "wires": [
+            [
+                "8a6bfbe00974ce01"
+            ]
+        ]
+    },
+    {
+        "id": "f7afe1b1e8084695",
+        "type": "Generic BLE in",
+        "z": "49cd927658ee0416",
+        "name": "ble",
+        "genericBle": "8de41b8723e2556c",
+        "useString": true,
+        "notification": true,
+        "x": 1140,
+        "y": 760,
+        "wires": [
+            [
+                "31fe939f393cad01"
+            ]
+        ]
+    },
+    {
+        "id": "cfcf2d85014a43f1",
+        "type": "Generic BLE out",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "genericBle": "8de41b8723e2556c",
+        "x": 1170,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "8a6bfbe00974ce01",
+        "type": "function",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "func": "var json_object = msg.payload;\n\nvar data = json_object.characteristics[\"0ca0130576b44856b325aa733e6f9be9\"].data;\nvar str = String.fromCharCode.apply(null, data);\nvar d = new Date();\nvar time_var = d.getTime();\n\nmsg.payload = str;\nmsg.url = \"https://anti-gravity-fitness-default-rtdb.firebaseio.com/rpi-data/\" + time_var.toString()+\".json\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1420,
+        "y": 760,
+        "wires": [
+            [
+                "868767705dd11e8f",
+                "b229addb964ec320"
+            ]
+        ]
+    },
+    {
+        "id": "868767705dd11e8f",
+        "type": "http request",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "method": "PUT",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 1610,
+        "y": 760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1755bb96873cc96c",
+        "type": "http request",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://anti-gravity-fitness-default-rtdb.firebaseio.com/Config.json",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 530,
+        "y": 1140,
+        "wires": [
+            [
+                "32342ac135595cd9",
+                "dc02d4b7a5b91a2f"
+            ]
+        ]
+    },
+    {
+        "id": "b23c78af313eda35",
+        "type": "delay",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "250",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 270,
+        "y": 1000,
+        "wires": [
+            [
+                "4c045b6615879e29",
+                "05c854c18c8c6e71"
+            ]
+        ]
+    },
+    {
+        "id": "b83101f50c4c8aa9",
+        "type": "inject",
+        "z": "49cd927658ee0416",
+        "name": "Start loop",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 100,
+        "y": 1060,
+        "wires": [
+            [
+                "b23c78af313eda35",
+                "a7e0b3c2f552ca9f"
+            ]
+        ]
+    },
+    {
+        "id": "4c045b6615879e29",
+        "type": "delay",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "250",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 270,
+        "y": 900,
+        "wires": [
+            [
+                "b23c78af313eda35"
+            ]
+        ]
+    },
+    {
+        "id": "32342ac135595cd9",
+        "type": "function",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "func": "var json_object = msg.payload;\n\nvar command = json_object.command;\nvar disconnect = json_object.disconnect;\nvar connect = json_object.connect;\nvar subscribe = json_object.subscribe;\n\n\nif (connect == 1) {\n    var key = \"connect\";\n    msg.payload = null;\n    msg.topic = key;\n} else if (subscribe == 1) {\n    var key = \"subscribe\";\n    msg.payload = { \"notify\": true, \"period\": 0 };\n    msg.topic = \"0ca0130576b44856b325aa733e6f9be9\";\n} else if (disconnect == 1) {\n    var key = \"disconnect\";\n    msg.payload = null;\n    msg.topic = key;\n} else if (command != 0) {\n    if (command == 1) {\n        msg.payload = { \"f810f9349f66416dbc5b493d04b2bb48\": \"01\" };\n    } else if (command == 2) {\n        msg.payload = { \"f810f9349f66416dbc5b493d04b2bb48\": \"02\" };\n    } else if (command == 3) {\n        msg.payload = { \"f810f9349f66416dbc5b493d04b2bb48\": \"03\" };\n    }\n    var key = \"command\";\n} else {\n    msg.payload = \"return\";\n}\n\n\n\nmsg.url = \"https://anti-gravity-fitness-default-rtdb.firebaseio.com/Config/\" + key+\".json\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 980,
+        "wires": [
+            [
+                "508bc31d2bccd585"
+            ]
+        ]
+    },
+    {
+        "id": "b5bc562e1d885908",
+        "type": "http request",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "method": "PUT",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 1130,
+        "y": 1080,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c6b5a1ad0b6e0772",
+        "type": "function",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "func": "msg.payload = 0;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 1080,
+        "wires": [
+            [
+                "b5bc562e1d885908"
+            ]
+        ]
+    },
+    {
+        "id": "5cf36dede3112a89",
+        "type": "switch",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "property": "url",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "neq",
+                "v": "https://anti-gravity-fitness-default-rtdb.firebaseio.com/Config/command.json",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "https://anti-gravity-fitness-default-rtdb.firebaseio.com/Config/command.json",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 970,
+        "y": 840,
+        "wires": [
+            [
+                "f7afe1b1e8084695"
+            ],
+            [
+                "cfcf2d85014a43f1"
+            ]
+        ]
+    },
+    {
+        "id": "508bc31d2bccd585",
+        "type": "switch",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "neq",
+                "v": "return",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 810,
+        "y": 980,
+        "wires": [
+            [
+                "5cf36dede3112a89",
+                "c6b5a1ad0b6e0772"
+            ]
+        ]
+    },
+    {
+        "id": "3aaeba10edc36feb",
+        "type": "inject",
+        "z": "49cd927658ee0416",
+        "name": "End Loop",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 100,
+        "y": 1120,
+        "wires": [
+            [
+                "93e80d6d6422d299"
+            ]
+        ]
+    },
+    {
+        "id": "05c854c18c8c6e71",
+        "type": "function",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "func": "var stop = flow.get('stop');\nif (stop) {\n    return;\n} else {\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 1060,
+        "wires": [
+            [
+                "1755bb96873cc96c"
+            ]
+        ]
+    },
+    {
+        "id": "93e80d6d6422d299",
+        "type": "function",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "func": "flow.set('stop', true);",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 1120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a7e0b3c2f552ca9f",
+        "type": "function",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "func": "flow.set('stop', false);",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 1060,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "986a636d751e1574",
+        "type": "inject",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 80,
+        "y": 300,
+        "wires": [
+            [
+                "15f014dee32a838a"
+            ]
+        ]
+    },
+    {
+        "id": "4fe482e910d716d8",
+        "type": "http request",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://anti-gravity-fitness-default-rtdb.firebaseio.com/rpi-data.json",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 550,
+        "y": 260,
+        "wires": [
+            [
+                "0d75af3887e3370a"
+            ]
+        ]
+    },
+    {
+        "id": "0d75af3887e3370a",
+        "type": "debug",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 730,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "15f014dee32a838a",
+        "type": "function",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "func": "var time = msg.payload;\nvar dict = {\n    [time]: \"data\"\n};\n\nmsg.payload = JSON.stringify(dict)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 240,
+        "y": 300,
+        "wires": [
+            [
+                "5c3c241429658e57"
+            ]
+        ]
+    },
+    {
+        "id": "5c3c241429658e57",
+        "type": "json",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "property": "payload",
+        "action": "str",
+        "pretty": false,
+        "x": 390,
+        "y": 300,
+        "wires": [
+            [
+                "4fe482e910d716d8",
+                "0d75af3887e3370a"
+            ]
+        ]
+    },
+    {
+        "id": "04c0acc0d0627a9f",
+        "type": "inject",
+        "z": "49cd927658ee0416",
+        "name": "Connect",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "connect",
+        "payloadType": "date",
+        "x": 680,
+        "y": 620,
+        "wires": [
+            [
+                "f7afe1b1e8084695",
+                "cfcf2d85014a43f1"
+            ]
+        ]
+    },
+    {
+        "id": "b4b4082f5cc96723",
+        "type": "inject",
+        "z": "49cd927658ee0416",
+        "name": "Subscribe",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "0ca0130576b44856b325aa733e6f9be9",
+        "payload": "{   \"notify\": true,   \"period\": 0 }",
+        "payloadType": "str",
+        "x": 100,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ef8854fe1e66bcf4",
+        "type": "inject",
+        "z": "49cd927658ee0416",
+        "name": "Disconnect",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "disconnect",
+        "payloadType": "date",
+        "x": 680,
+        "y": 680,
+        "wires": [
+            [
+                "f7afe1b1e8084695",
+                "cfcf2d85014a43f1"
+            ]
+        ]
+    },
+    {
+        "id": "3dc2029c585bfcd9",
+        "type": "inject",
+        "z": "49cd927658ee0416",
+        "name": "Read",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "0ca0130576b44856b325aa733e6f9be9",
+        "payloadType": "date",
+        "x": 110,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3786a4b99eb73a4e",
+        "type": "inject",
+        "z": "49cd927658ee0416",
+        "name": "on",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"f810f9349f66416dbc5b493d04b2bb48\":\"01\"}",
+        "payloadType": "json",
+        "x": 670,
+        "y": 740,
+        "wires": [
+            [
+                "cfcf2d85014a43f1"
+            ]
+        ]
+    },
+    {
+        "id": "2e107e267b6505eb",
+        "type": "inject",
+        "z": "49cd927658ee0416",
+        "name": "off",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"f810f9349f66416dbc5b493d04b2bb48\":\"02\"}",
+        "payloadType": "json",
+        "x": 670,
+        "y": 780,
+        "wires": [
+            [
+                "cfcf2d85014a43f1"
+            ]
+        ]
+    },
+    {
+        "id": "54fd289bc8e3aeba",
+        "type": "inject",
+        "z": "49cd927658ee0416",
+        "name": "reset",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "write",
+        "payload": "{\"f810f9349f66416dbc5b493d04b2bb48\":\"03\"}",
+        "payloadType": "json",
+        "x": 670,
+        "y": 820,
+        "wires": [
+            [
+                "cfcf2d85014a43f1"
+            ]
+        ]
+    },
+    {
+        "id": "dc02d4b7a5b91a2f",
+        "type": "link out",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "3fa7b3cdfc8a61f7"
+        ],
+        "x": 715,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "b229addb964ec320",
+        "type": "debug",
+        "z": "49cd927658ee0416",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1600,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "111ba96334d09ad2",
+        "type": "json",
+        "z": "28f5009f44845641",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 930,
+        "y": 320,
+        "wires": [
+            [
+                "b5fdcc5deb80f481"
+            ]
+        ]
+    },
+    {
+        "id": "c3ce94662cae376b",
+        "type": "Generic BLE in",
+        "z": "28f5009f44845641",
+        "name": "ble",
+        "genericBle": "916aae87fd60c62c",
+        "useString": true,
+        "notification": true,
+        "x": 800,
+        "y": 320,
+        "wires": [
+            [
+                "111ba96334d09ad2"
+            ]
+        ]
+    },
+    {
+        "id": "848051f9a8a945ce",
+        "type": "Generic BLE out",
+        "z": "28f5009f44845641",
+        "name": "",
+        "genericBle": "916aae87fd60c62c",
+        "x": 830,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "b5fdcc5deb80f481",
+        "type": "function",
+        "z": "28f5009f44845641",
+        "name": "",
+        "func": "var json_object = msg.payload;\n\nvar data = json_object.characteristics[\"b91006d878c744949ec4fdfe8dfb3cc7\"].data;\nvar str = String.fromCharCode.apply(null, data);\nvar d = new Date();\nvar time_var = d.getTime();\n\nmsg.payload = str;\nmsg.url = \"https://anti-gravity-fitness-default-rtdb.firebaseio.com/bpm-data/\" + time_var.toString()+\"/.json\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 320,
+        "wires": [
+            [
+                "6a4f637c8bd06421",
+                "c543f09025f8e59b"
+            ]
+        ]
+    },
+    {
+        "id": "6a4f637c8bd06421",
+        "type": "http request",
+        "z": "28f5009f44845641",
+        "name": "",
+        "method": "PUT",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 1270,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5273fe0db2c7ca74",
+        "type": "inject",
+        "z": "28f5009f44845641",
+        "name": "Connect",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "connect",
+        "payloadType": "date",
+        "x": 360,
+        "y": 100,
+        "wires": [
+            [
+                "c3ce94662cae376b",
+                "848051f9a8a945ce"
+            ]
+        ]
+    },
+    {
+        "id": "8c61b041dd7667a1",
+        "type": "inject",
+        "z": "28f5009f44845641",
+        "name": "Disconnect",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "disconnect",
+        "payloadType": "date",
+        "x": 360,
+        "y": 160,
+        "wires": [
+            [
+                "c3ce94662cae376b",
+                "848051f9a8a945ce"
+            ]
+        ]
+    },
+    {
+        "id": "fc8577875abad37e",
+        "type": "inject",
+        "z": "28f5009f44845641",
+        "name": "on",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"9b1f22f12dc64bb0b3c349399001b4d1\":\"01\"}",
+        "payloadType": "json",
+        "x": 350,
+        "y": 220,
+        "wires": [
+            [
+                "848051f9a8a945ce"
+            ]
+        ]
+    },
+    {
+        "id": "7578b565376b75fd",
+        "type": "inject",
+        "z": "28f5009f44845641",
+        "name": "off",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"9b1f22f12dc64bb0b3c349399001b4d1\":\"02\"}",
+        "payloadType": "json",
+        "x": 350,
+        "y": 260,
+        "wires": [
+            [
+                "848051f9a8a945ce"
+            ]
+        ]
+    },
+    {
+        "id": "d5f4c332cb8f0c8f",
+        "type": "inject",
+        "z": "28f5009f44845641",
+        "name": "reset",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "write",
+        "payload": "{\"9b1f22f12dc64bb0b3c349399001b4d1\":\"03\"}",
+        "payloadType": "json",
+        "x": 350,
+        "y": 300,
+        "wires": [
+            [
+                "848051f9a8a945ce"
+            ]
+        ]
+    },
+    {
+        "id": "f3789a02ae27a1e9",
+        "type": "inject",
+        "z": "28f5009f44845641",
+        "name": "Subscribe",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "b91006d878c744949ec4fdfe8dfb3cc7",
+        "payload": "{   \"notify\": true,   \"period\": 0 }",
+        "payloadType": "str",
+        "x": 360,
+        "y": 40,
+        "wires": [
+            [
+                "c3ce94662cae376b"
+            ]
+        ]
+    },
+    {
+        "id": "3fa7b3cdfc8a61f7",
+        "type": "link in",
+        "z": "28f5009f44845641",
+        "name": "",
+        "links": [
+            "dc02d4b7a5b91a2f"
+        ],
+        "x": 155,
+        "y": 520,
+        "wires": [
+            [
+                "f64a6afef3667c4f"
+            ]
+        ]
+    },
+    {
+        "id": "f64a6afef3667c4f",
+        "type": "function",
+        "z": "28f5009f44845641",
+        "name": "",
+        "func": "var json_object = msg.payload;\n\nvar command = json_object.command;\nvar disconnect = json_object.disconnect;\nvar connect = json_object.connect;\nvar subscribe = json_object.subscribe;\n\n\nif (connect == 1) {\n    var key = \"connect\";\n    msg.payload = null;\n    msg.topic = key;\n} else if (subscribe == 1) {\n    var key = \"subscribe\";\n    msg.payload = { \"notify\": true, \"period\": 0 };\n    msg.topic = \"b91006d878c744949ec4fdfe8dfb3cc7\";\n} else if (disconnect == 1) {\n    var key = \"disconnect\";\n    msg.payload = null;\n    msg.topic = key;\n} else if (command != 0) {\n    if (command == 1) {\n        msg.payload = { \"9b1f22f12dc64bb0b3c349399001b4d1\": \"01\" };\n    } else if (command == 2) {\n        msg.payload = { \"9b1f22f12dc64bb0b3c349399001b4d1\": \"02\" };\n    } else if (command == 3) {\n        msg.payload = { \"9b1f22f12dc64bb0b3c349399001b4d1\": \"03\" };\n    }\n    var key = \"command\";\n} else {\n    msg.payload = \"return\";\n}\n\n\n\nmsg.url = \"https://anti-gravity-fitness-default-rtdb.firebaseio.com/Config/\" + key+\".json\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 520,
+        "wires": [
+            [
+                "772fe4f53385de9a"
+            ]
+        ]
+    },
+    {
+        "id": "772fe4f53385de9a",
+        "type": "switch",
+        "z": "28f5009f44845641",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "neq",
+                "v": "return",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 410,
+        "y": 520,
+        "wires": [
+            [
+                "a0ba99aa66783f91"
+            ]
+        ]
+    },
+    {
+        "id": "a0ba99aa66783f91",
+        "type": "switch",
+        "z": "28f5009f44845641",
+        "name": "",
+        "property": "url",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "neq",
+                "v": "https://anti-gravity-fitness-default-rtdb.firebaseio.com/Config/command.json",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "https://anti-gravity-fitness-default-rtdb.firebaseio.com/Config/command.json",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 570,
+        "y": 460,
+        "wires": [
+            [
+                "c3ce94662cae376b"
+            ],
+            [
+                "848051f9a8a945ce"
+            ]
+        ]
+    },
+    {
+        "id": "c543f09025f8e59b",
+        "type": "debug",
+        "z": "28f5009f44845641",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1330,
+        "y": 260,
+        "wires": []
+    }
+]
