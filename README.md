@@ -1,6 +1,8 @@
 # anti-gravity-fitness
 Smart workout system which collects repetitions and over time suggests weights for optimal progression over time
 
+Youtube video highlighting operation - https://www.youtube.com/watch?v=lAOFHM4SALs&t=8s
+
 ## Accelerometer Data
 red = velocity
 blue = acceleration
